@@ -1,9 +1,10 @@
-import { Modal, Form, Input, Button, Tooltip, Icon, Select, Radio } from "antd";
+import { Modal, Form, Input, Select, Radio } from "antd";
 import React, { useState, useEffect } from "react";
 import styles from './create-edit-mapping-dialog.module.scss';
 import { NewMapTooltips } from '../../../../config/tooltips.config';
 import Axios from "axios";
 import { MLButton, MLTooltip } from '@marklogic/design-system';
+import { QuestionCircleFilled } from '@marklogic/design-system/es/MLIcon';
 
 
 const CreateEditMappingDialog = (props) => {
@@ -338,7 +339,7 @@ const CreateEditMappingDialog = (props) => {
             className={styles.input}
           />&nbsp;&nbsp;
           <MLTooltip title={NewMapTooltips.name}>
-        <Icon type="question-circle" className={styles.questionCircle} theme="filled" />
+        <QuestionCircleFilled className={styles.questionCircle} />
       </MLTooltip>
         </Form.Item>
         <Form.Item label={<span>
@@ -354,7 +355,7 @@ const CreateEditMappingDialog = (props) => {
             className={styles.input}
           />&nbsp;&nbsp;
           <MLTooltip title={NewMapTooltips.description}>
-        <Icon type="question-circle" className={styles.questionCircle} theme="filled" />
+        <QuestionCircleFilled className={styles.questionCircle} />
       </MLTooltip>
         </Form.Item>
 
@@ -384,7 +385,7 @@ const CreateEditMappingDialog = (props) => {
           >
             {/* {collectionsList} */}
           </Input>&nbsp;&nbsp;<MLTooltip title={NewMapTooltips.sourceQuery}>
-            <Icon type="question-circle" className={styles.questionCircle} theme="filled" />
+            <QuestionCircleFilled className={styles.questionCircle} />
           </MLTooltip></span></div> : <span><TextArea
             id="srcQuery"
             placeholder="Enter Source Query"
@@ -393,7 +394,7 @@ const CreateEditMappingDialog = (props) => {
             disabled={!props.canReadWrite}
             className={styles.input}
           ></TextArea>&nbsp;&nbsp;<MLTooltip title={NewMapTooltips.sourceQuery}>
-          <Icon type="question-circle" className={styles.questionCircleTextArea} theme="filled" />
+          <QuestionCircleFilled className={styles.questionCircleTextArea} />
         </MLTooltip></span>}
         </Form.Item>
         <br /><br /><br /><br />

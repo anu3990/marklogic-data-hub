@@ -8,10 +8,9 @@ import { Tooltip } from 'antd';
 import { SearchContext } from '../../util/search-context';
 import { tableParser } from '../../util/data-conversion';
 import { Link } from 'react-router-dom';
-import { faExternalLinkAlt, faCode } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { dateConverter } from '../../util/date-conversion';
 import { MLTooltip } from '@marklogic/design-system';
+import { Code, ExternalLinkAlt } from '@marklogic/design-system/es/MLIcon';
 
 interface Props {
     data: any;
@@ -226,7 +225,11 @@ const ResultsTabularView = (props) => {
                         tableView: props.tableView
                     }}} id={'instance'}
                     data-cy='instance'>
-                    <Tooltip title={'Show the processed data'}><FontAwesomeIcon icon={faExternalLinkAlt} size="sm" data-testid={`${primaryKeyValue}-detailOnSeparatePage`} /></Tooltip>
+                    <Tooltip title={'Show the processed data'}>
+                        <i className={styles.separateLink}>
+                            <ExternalLinkAlt data-testid={`${primaryKeyValue}-detailOnSeparatePage`} />
+                        </i>
+                    </Tooltip>
                 </Link>
                 <Link to={{ pathname: `${path.pathname}`,
                     state: { selectedValue: 'source',
@@ -238,7 +241,11 @@ const ResultsTabularView = (props) => {
                         tableView: props.tableView
                     } }} id={'source'}
                     data-cy='source'>
-                    <Tooltip title={'Show the complete ' + item.format.toUpperCase()}><FontAwesomeIcon icon={faCode} size="sm" data-testid={`${primaryKeyValue}-sourceOnSeparatePage`} /></Tooltip>
+                    <Tooltip title={'Show the complete ' + item.format.toUpperCase()}>
+                        <i className={styles.separateLink}>
+                            <Code data-testid={`${primaryKeyValue}-sourceOnSeparatePage`} />
+                        </i>
+                    </Tooltip>
                 </Link>
             </div>
         if (props.selectedEntities?.length === 0) {
@@ -335,8 +342,11 @@ const ResultsTabularView = (props) => {
                                 query: searchOptions.query,
                                 tableView: props.tableView} }}
                             data-cy='nested-instance'>
-                            <Tooltip title={'Show nested detail on a separate page'}><FontAwesomeIcon icon={faExternalLinkAlt}
-                                size="sm" /></Tooltip>
+                            <Tooltip title={'Show nested detail on a separate page'}>
+                                <i className={styles.separateLink}>
+                                    <ExternalLinkAlt />
+                                </i>
+                            </Tooltip>
                         </Link>
                     });
                 } else {

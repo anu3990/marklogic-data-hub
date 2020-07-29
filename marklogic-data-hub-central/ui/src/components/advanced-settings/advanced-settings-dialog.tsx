@@ -2,10 +2,7 @@ import {
   Modal,
   Form,
   Input,
-  Button,
-  Tooltip,
-  Icon,
-  Select,
+  Select
 } from 'antd';
 import React, { useState, useEffect, useContext } from 'react';
 import styles from './advanced-settings-dialog.module.scss';
@@ -14,6 +11,7 @@ import { AdvancedSettingsMessages } from '../../config/messages.config';
 import { UserContext } from '../../util/user-context';
 import Axios from 'axios';
 import { MLButton, MLTooltip } from '@marklogic/design-system';
+import { QuestionCircleFilled, RightOutlined } from '@marklogic/design-system/es/MLIcon';
 
 
 const { TextArea } = Input;
@@ -528,7 +526,7 @@ const AdvancedSettingsDialog = (props) => {
           </Select>&nbsp;&nbsp;
           <div className={styles.selectTooltip}>
             <MLTooltip title={tooltips.sourceDatabase}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
         </Form.Item> : null
@@ -550,7 +548,7 @@ const AdvancedSettingsDialog = (props) => {
           </Select>
           <div className={styles.selectTooltip}>
             <MLTooltip title={tooltips.targetDatabase}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
         </Form.Item>
@@ -576,7 +574,7 @@ const AdvancedSettingsDialog = (props) => {
           </Select>
           <div className={styles.inputTooltip}>
             <MLTooltip title={tooltips.additionalCollections}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
         </Form.Item>
@@ -602,7 +600,7 @@ const AdvancedSettingsDialog = (props) => {
           />
           <div className={styles.inputTooltip}>
             <MLTooltip title={tooltips.targetPermissions}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
           <div className={styles.validationError}>
@@ -627,7 +625,7 @@ const AdvancedSettingsDialog = (props) => {
           </Select>
           <div className={styles.inputTooltip}>
             <MLTooltip title={tooltips.targetFormat} placement={'right'}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
         </Form.Item> : null }
@@ -649,7 +647,7 @@ const AdvancedSettingsDialog = (props) => {
           </Select>
           <div className={styles.selectTooltip}>
             <MLTooltip title={tooltips.provGranularity} placement={'right'}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
         </Form.Item>
@@ -671,7 +669,7 @@ const AdvancedSettingsDialog = (props) => {
           </Select>
               <div className={styles.selectTooltip}>
                   <MLTooltip title={tooltips.validateEntity} placement={'right'}>
-                      <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+                    <QuestionCircleFilled className={styles.questionCircle} />
                   </MLTooltip>
               </div>
           </Form.Item> : ''}
@@ -690,14 +688,14 @@ const AdvancedSettingsDialog = (props) => {
           />
           <div className={styles.inputTooltip}>
             <MLTooltip title={tooltips.batchSize} placement={'right'}>
-                <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
         </Form.Item>
         { usesHeaders ? <>
         <div className={styles.textareaTooltip}>
           <MLTooltip title={tooltips.headers}>
-            <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+            <QuestionCircleFilled className={styles.questionCircle} />
           </MLTooltip>
         </div>
         <Form.Item
@@ -721,8 +719,7 @@ const AdvancedSettingsDialog = (props) => {
         </Form.Item></> : null }
         <Form.Item
           label={<span>
-            <Icon
-              type="right"
+            <RightOutlined
               className={styles.rightArrow}
               onClick={() => setProcessorsExpanded(!processorsExpanded)}
               rotate={processorsExpanded ? 90 : 0}
@@ -736,7 +733,7 @@ const AdvancedSettingsDialog = (props) => {
         { processorsExpanded ? <div className={styles.expandContainer}>
           <div className={styles.textareaExpandTooltip}>
             <MLTooltip title={tooltips.processors}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
           <TextArea
@@ -755,8 +752,7 @@ const AdvancedSettingsDialog = (props) => {
         </div> : ''}
         <Form.Item
           label={<span>
-            <Icon
-              type="right"
+            <RightOutlined
               className={styles.rightArrow}
               onClick={() => setCustomHookExpanded(!customHookExpanded)}
               rotate={customHookExpanded ? 90 : 0}
@@ -770,7 +766,7 @@ const AdvancedSettingsDialog = (props) => {
         { customHookExpanded ? <div className={styles.expandContainer}>
           <div className={styles.textareaExpandTooltip}>
             <MLTooltip title={tooltips.customHook}>
-              <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+              <QuestionCircleFilled className={styles.questionCircle} />
             </MLTooltip>
           </div>
           <TextArea
@@ -803,7 +799,7 @@ const AdvancedSettingsDialog = (props) => {
             />
             <div className={styles.selectTooltip}>
                 <MLTooltip title={props.tooltipsData.additionalSettings} placement={'right'}>
-                    <Icon type="question-circle" className={styles.questionCircle} theme="filled"/>
+                  <QuestionCircleFilled className={styles.questionCircle} />
                 </MLTooltip>
             </div>
         </Form.Item> : null

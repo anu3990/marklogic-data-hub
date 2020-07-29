@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, useLayoutEffect } from 'react';
 import axios from 'axios';
-import { Layout, Tooltip, Spin, Select } from 'antd';
+import { Layout } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { UserContext } from '../util/user-context';
 import { SearchContext } from '../util/search-context';
@@ -15,8 +15,6 @@ import ResultTable from '../components/result-table/result-table';
 import { updateUserPreferences, createUserPreferences } from '../services/user-preferences';
 import { entityFromJSON, entityParser, getTableProperties } from '../util/data-conversion';
 import styles from './Browse.module.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStream, faTable } from '@fortawesome/free-solid-svg-icons'
 import Query from '../components/queries/queries'
 import { AuthoritiesContext } from "../util/authorities";
 import { fetchQueries } from '../api/queries';
@@ -24,7 +22,8 @@ import ZeroStateExplorer from '../components/zero-state-explorer/zero-state-expl
 import ResultsTabularView from "../components/results-tabular-view/results-tabular-view";
 import { QueryOptions } from '../types/query-types';
 import { MLTooltip, MLSpin } from '@marklogic/design-system';
-
+import { Stream, Table } from '@marklogic/design-system/es/MLIcon';
+import './Browse.scss';
 
 
 interface Props extends RouteComponentProps<any> {
@@ -280,12 +279,18 @@ const Browse: React.FC<Props> = ({ location }) => {
                     <div className={!tableView ? styles.toggled : styles.toggleView}
                       data-cy="facet-view" id={'snippetView'}
                       onClick={() => toggleTableView(false)}>
-                      <MLTooltip title={'Snippet View'}><FontAwesomeIcon icon={faStream} size="lg" /></MLTooltip>
+                      <MLTooltip title={'Snippet View'}>
+                        <Stream />
+                        {/* <FontAwesomeIcon icon={faStream} size="lg" /> */}
+                      </MLTooltip>
                     </div>
                     <div className={tableView ? styles.toggled : styles.toggleView}
                       data-cy="table-view" id={'tableView'}
                       onClick={() => toggleTableView(true)}>
-                      <MLTooltip title={'Table View'}><FontAwesomeIcon className={styles.tableIcon} icon={faTable} size="lg" /></MLTooltip>
+                      <MLTooltip title={'Table View'}>
+                        <Table />
+                        {/* <FontAwesomeIcon className={styles.tableIcon} icon={faTable} size="lg" /> */}
+                      </MLTooltip>
                     </div>
                   </div>
                 </div>

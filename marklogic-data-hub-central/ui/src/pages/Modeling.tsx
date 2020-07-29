@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { faUndo } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MLButton, MLTooltip, MLAlert } from '@marklogic/design-system';
 
 import ConfirmationModal from '../components/confirmation-modal/confirmation-modal';
@@ -14,6 +12,7 @@ import { ModelingContext } from '../util/modeling-context';
 import { ModelingTooltips } from '../config/tooltips.config';
 import { AuthoritiesContext } from '../util/authorities';
 import { ConfirmationType } from '../types/modeling-types';
+import { Undo } from '@marklogic/design-system/es/MLIcon';
 
 const Modeling: React.FC = () => {
   const { handleError, resetSessionTime } = useContext(UserContext);
@@ -171,27 +170,25 @@ const Modeling: React.FC = () => {
               </MLTooltip>
           }
           <MLButton 
-            disabled={!modelingOptions.isModified} 
             aria-label="save-all"
             onClick={() => {
               setConfirmType(ConfirmationType.SaveAll);
               toggleConfirmModal(true);
             }}
+            disabled={!modelingOptions.isModified} 
           >
             <span className={styles.publishIcon}></span>
             Save All
           </MLButton>
-          <MLButton aria-label="revert-all" onClick={() => {
-            setConfirmType(ConfirmationType.RevertAll);
-            toggleConfirmModal(true)
-          }}
-                    disabled={!modelingOptions.isModified}>
-            <FontAwesomeIcon 
-              className={styles.icon} 
-              icon={faUndo} 
-              size="sm"
-            />
-            Revert All
+          <MLButton 
+            aria-label="revert-all" 
+            onClick={() => {
+              setConfirmType(ConfirmationType.RevertAll);
+              toggleConfirmModal(true)
+            }}
+            disabled={!modelingOptions.isModified}
+          >
+            <Undo className={styles.icon} />Revert All
           </MLButton>
         </div>
       </div>
