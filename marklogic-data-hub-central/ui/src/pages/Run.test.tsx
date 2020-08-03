@@ -140,7 +140,7 @@ describe('Verify load step failures in a flow', () => {
         // Click disclosure icon
         fireEvent.click(getByLabelText("icon: right"));
         let runButton = await getByLabelText("runStep-failedIngest");
-        fireEvent.mouseOver(getAllByLabelText("icon: play-circle")[0]);
+        fireEvent.mouseOver(getAllByLabelText("play-circle")[0]);
         await waitForElement(() => getByText(RunToolTips.ingestionStep));
 
         let upload;
@@ -350,7 +350,7 @@ describe('Verify step display', () => {
         expect(await(waitForElement(() => getByText("XML")))).toBeInTheDocument();
         expect(await(waitForElement(() => getByText("loadXML")))).toBeInTheDocument();
 
-        let notification = await(waitForElement(() =>getByLabelText("icon: check-circle")));
+        let notification = await(waitForElement(() =>getByLabelText("check-circle")));
         expect(notification).toBeInTheDocument();
         fireEvent.mouseOver(notification);
         expect(await(waitForElement(() => getByText("Step last ran successfully on 7/13/2020, 11:54:06 PM")))).toBeInTheDocument();
@@ -363,7 +363,7 @@ describe('Verify step display', () => {
         // Click disclosure icon
         fireEvent.click(getByLabelText("icon: right"));
         expect(await(waitForElement(() => getByText("Mapping1")))).toBeInTheDocument();
-        let notification = await(waitForElement(() =>getByLabelText("icon: exclamation-circle")));
+        let notification = await(waitForElement(() =>getByLabelText("exclamation-circle")));
         expect(notification).toBeInTheDocument();
         fireEvent.mouseOver(notification);
         expect(await(waitForElement(() => getByText("Step last ran with errors on 4/4/2020, 1:17:45 AM")))).toBeInTheDocument();
