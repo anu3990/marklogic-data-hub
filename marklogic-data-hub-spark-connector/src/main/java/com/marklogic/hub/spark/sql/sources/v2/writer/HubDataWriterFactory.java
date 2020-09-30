@@ -50,10 +50,7 @@ public class HubDataWriterFactory extends LoggingObject implements DataWriterFac
 
     @Override
     public DataWriter<InternalRow> createDataWriter(int partitionId, long taskId, long epochId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Creating DataWriter with taskId: " + taskId);
-        }
-        return new HubDataWriter(hubClient, taskId, schema, params);
+        return new HubDataWriter(hubClient, schema, params);
     }
 
     protected HubConfigImpl buildHubConfig(Map<String, String> params) {

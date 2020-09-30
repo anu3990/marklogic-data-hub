@@ -15,6 +15,10 @@
  */
 package com.marklogic.hub.spark.sql.sources.v2.writer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.marklogic.client.dataservices.InputEndpoint;
 import com.marklogic.client.ext.helper.LoggingObject;
 import com.marklogic.client.io.StringHandle;
@@ -27,9 +31,7 @@ import org.apache.spark.sql.sources.v2.writer.DataWriter;
 import org.apache.spark.sql.sources.v2.writer.WriterCommitMessage;
 import org.apache.spark.sql.types.StructType;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,24 +47,23 @@ public class HubDataWriter extends LoggingObject implements DataWriter<InternalR
     /**
      *
      * @param hubClient
-     * @param taskId
      * @param schema
      * @param params contains all the params provided by Spark, which will include all connector-specific properties
      */
-    public HubDataWriter(HubClient hubClient, long taskId, StructType schema, Map<String, String> params) {
+    public HubDataWriter(HubClient hubClient, StructType schema, Map<String, String> params) {
         this.records = new ArrayList<>();
         this.schema = schema;
         this.batchSize = params.containsKey("batchsize") ? Integer.parseInt(params.get("batchsize")) : 100;
 
-        final String apiModulePath = params.containsKey("apipath") ? params.get("apipath") : "/data-hub/5/data-services/ingestion/bulkIngester.api";
-        logger.info("Will write to endpoint defined by: " + apiModulePath);
+        JsonNode endpointParamsJsonNode = determineIngestionEndpointParams(params);
+
         this.loader = InputEndpoint.on(
             hubClient.getStagingClient(),
-            hubClient.getModulesClient().newTextDocumentManager().read(apiModulePath, new StringHandle())
+            hubClient.getModulesClient().newJSONDocumentManager().read(endpointParamsJsonNode.get("apiPath").asText(), new StringHandle())
         ).bulkCaller();
 
-        loader.setWorkUnit(new ByteArrayInputStream(("{\"taskId\":" + taskId + "}").getBytes()));
-        loader.setEndpointState(new ByteArrayInputStream(("{\"next\":" + 0 + ", \"uriprefix\":\"" + params.get("uriprefix") + "\"}").getBytes()));
+        this.loader.setEndpointState(new ByteArrayInputStream((endpointParamsJsonNode.get("endpointState").asText()).getBytes()));
+        this.loader.setWorkUnit(new ByteArrayInputStream((endpointParamsJsonNode.get("workUnit").asText()).getBytes()));
     }
 
     @Override
@@ -114,4 +115,52 @@ public class HubDataWriter extends LoggingObject implements DataWriter<InternalR
         return jsonObjectWriter.toString();
     }
 
+    protected JsonNode determineIngestionEndpointParams(Map<String, String> params) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String ingestEndpointParams = params.containsKey("ingestendpointparams")?
+            params.get("ingestendpointparams"):objectMapper.createObjectNode().toString();
+
+        JsonNode endpointParamsJsonNode;
+        try {
+            endpointParamsJsonNode = objectMapper.readValue(ingestEndpointParams, JsonNode.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to parse ingestendpointparams, cause: " + e.getMessage(), e);
+        }
+
+        boolean doesNotHaveApiPath = !endpointParamsJsonNode.has("apiPath");
+        boolean hasWorkUnitOrEndpointState = endpointParamsJsonNode.has("workUnit") || endpointParamsJsonNode.has("endpointState");
+        if (doesNotHaveApiPath && hasWorkUnitOrEndpointState) {
+            throw new RuntimeException("Cannot set workUnit or endpointState in ingestionendpointparams unless apiPath is defined as well.");
+        }
+
+        final String apiModulePath = (endpointParamsJsonNode.hasNonNull("apiPath") &&
+            endpointParamsJsonNode.get("apiPath").asText().length() > 0) ?
+            endpointParamsJsonNode.get("apiPath").asText() : "/data-hub/5/data-services/ingestion/bulkIngester.api";
+        logger.info("Will write to endpoint defined by: " + apiModulePath);
+        ((ObjectNode)endpointParamsJsonNode).put("apiPath", apiModulePath);
+
+        if (endpointParamsJsonNode.hasNonNull("endpointState") && endpointParamsJsonNode.get("endpointState").asText().length() > 0) {
+            ((ObjectNode)endpointParamsJsonNode).set("endpointState", endpointParamsJsonNode.get("endpointState"));
+        }
+        // TODO : remove the below else block after java-client-api 5.3 release
+        else {
+            ((ObjectNode)endpointParamsJsonNode).put("endpointState", "{}");
+        }
+        String uriPrefix = params.get("uriprefix")!=null? params.get("uriprefix"):"";
+        if (endpointParamsJsonNode.hasNonNull("workUnit") && endpointParamsJsonNode.get("workUnit").asText().length() > 0) {
+
+            JsonNode workUnitNode;
+            try {
+                workUnitNode = objectMapper.readValue(endpointParamsJsonNode.get("workUnit").asText(), JsonNode.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Unable to parse workUnit, cause: " + e.getMessage(), e);
+            }
+            ((ObjectNode) workUnitNode).put("uriprefix", uriPrefix);
+            ((ObjectNode)endpointParamsJsonNode).set("workUnit", workUnitNode);
+        } else {
+            ((ObjectNode)endpointParamsJsonNode).put("workUnit", "{\"uriprefix\":\"" + uriPrefix + "\"}");
+        }
+        return endpointParamsJsonNode;
+    }
 }
